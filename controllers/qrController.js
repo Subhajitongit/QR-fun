@@ -103,3 +103,24 @@ module.exports.scanQR = async function scanQR(req, res) {
     });
   }
 };
+
+module.exports.qrScannedLocations = async function qrScannedLocations(
+  req,
+  res
+) {
+  try {
+    // Retrieve code and user from the request body
+    const { code } = req.body;
+
+    // Find the QR code with the specified code ID
+    const qrCode = await qrModel.findOne({ codeId: code });
+    if (!qrCode) {
+      // If QR code is not found, return a 404 error
+      return res.status(404).json({ message: "QR code not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Locations found successfully", data: qrCode.location });
+  } catch (err) {}
+};
